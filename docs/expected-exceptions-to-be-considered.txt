@@ -1,0 +1,2 @@
+1) If the "type" property is not set in the constructor method of schema class, the default value for "type" property is "object".
+2) What happens if there is a schema type object as root object?

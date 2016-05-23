@@ -1,0 +1,117 @@
+1) default values for logical gates
+2) documentation for default value assignments and unexpected behaviours
+3) validation properties outside validation object
+i. e.
+THIS
+{
+  validation: {
+    minLength: 9
+    maxLength: 30
+  }
+  minLength: 3
+}
+BECOMES THIS
+{
+  validation: {
+    AND: [
+      {
+        minLength: 9
+        maxLength: 30
+      }
+      { minLength: 3 }
+    ]
+  }
+}
+
+4) console.trace
+5) custom
+
+userCommonSchema = new Schema {
+  type : 'object'
+  allowNull : false
+  validation : {}
+  map : {
+    password : {
+      type : 'string'
+      allowNull : false
+      validation : {
+        minLength : 1
+        maxLength : 256
+      }
+    }
+    repeatedPassword : {
+      type : 'string'
+      allowNull : false
+      validation : {
+        message: 'Invalid repeated password'
+        minLength : 1
+        maxLength : 256
+        custom: {
+          message: 'expected passwords to be equal in custom validation function'
+          params: [
+            '^password'
+            '.'
+          ]
+          fn : ( parameterList ) -> return parameterList[ 0 ] is parameterList[ 1 ]
+        }
+    }
+    }
+ }
+}
+6) check for map property in schemaJsonSignature for 'object' type
+7) check for def property in schemaJsonSignature for 'array' type
+if key == 'def'
+8) 'mutate' property name. applicable only for literal type.
+mutationFn: (ownValue) -> return modified ownValue
+no need to validate resultant value
+9) 'compute' function serves options like array join.
+userDataSchema = new Schema {
+ type : 'object'
+ allowNull : false
+ __mapOrderedKeyList: []
+ validation : {}
+ map : {
+   firstName : {
+     type : 'string'
+     allowNull : false
+     validation : {
+       minLength : 1
+       maxLength : 256
+     }
+   }
+   lastName : {
+     type : 'string'
+     allowNull : false
+     validation : {
+       minLength : 1
+       maxLength : 256
+     }
+   }
+   fullName: {
+     type: 'string'
+     compute: {
+       params: [
+         '^firstName'
+         '^lastName'
+       ]
+       fn : (firstName, lastName) -> return firstName + ' ' + lastName
+     }
+     validation: .. as usual ..
+   }
+ }
+}
+also must work for merge function while merging schema
+10) schema type object call while extracting data from supplied object using schema json signature
+11) sample errorDetails object
+errorDetails = {
+  userList:
+    ‘1’:
+      name:
+        last: [’maxLength Crossed’]
+}
+
+# exception throw/catch for json
+obj = try JSON.parse(jsonData) catch ex else null
+
+05-08-2015
+1) Modify logger class to include ip addresses. 

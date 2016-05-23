@@ -1,0 +1,14 @@
+{
+  "name": "schema-engine",
+  "version": "0.0.2",
+  "description": "schema-engine library",
+  "main": "schema.coffee",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^2.3.0"
+  }
+}

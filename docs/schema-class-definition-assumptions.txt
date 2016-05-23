@@ -1,0 +1,2 @@
+1) If "suppressCyclicDataErrors" or "ignoreUnidentifiedData" of options parameter in constructor is not supplied, default value "false" is assigned.
+2) The logic gates used for validation object structures are: [ 'AND' , 'OR' , 'NOT' ]

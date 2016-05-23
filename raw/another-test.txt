@@ -1,0 +1,78 @@
+
+    userDataSchemaJson =
+      type: 'object'
+      map:
+        name:
+          type: 'object'
+          customEvaluationOrder: ['last', 'first', 'middle', 'honorifics']
+          map:
+            honorifics:
+              type: 'string'
+              allowNull: true
+              validation:
+                OR: [
+                  { contains: 'Mr'}
+                  { contains: 'Mss'}
+                  { contains: 'Miss'}
+                  { contains: 'Dr'}
+                ]
+            first:
+              type: 'string'
+              validation:
+                minLength: 2
+                maxLength: 32
+            middle:
+              type: 'string'
+              allowNull: true
+              validation:
+                minLength: 2
+                maxLength: 64
+            last:
+              type: 'string'
+              validation:
+                minLength: 2
+                maxLength: 32
+        greetAs:
+          type: 'string'
+          compute:
+            params: [ '^name.honorifics', '^name.first', '^name.middle', '^name.last' ]
+            fn: (honorifics, first, middle, last)->
+              (if honorifics then honorifics + ' ' else '') + first + ' ' + (if middle then middle + ' ' else '') + last
+          validation:
+            minLength: 4
+        password:
+          type: 'string'
+          minLength: 8
+          maxLength: 64
+          validation:
+            custom:
+              params: ['.']
+              fn: (password)->
+                if (checkStrengthUsingSomeArbitaryStrengthCheckingFunction password) is 'acceptable'
+                  return true
+                else
+                  return false
+        repeatedPassword:
+          type: 'string'
+          validation:
+            custom:
+              params: ['^password', '.']
+              fn: (password, repeatedPassword)-> password is repeatedPassword
+        registrationDateTime:
+          type: 'integer'
+          validation:
+            custom:
+              params: ['.']
+              fn: (value)-> 0 < (new Date).getTime() - (new Date value).getTime() < 10 * 365 * 24 * 60 * 60 * 1000
+          mutate:
+            fn: (value)-> (new Date value)
+
+    exampleUser =
+      name:
+        honorifics: 'Mr'
+        first: 'John'
+        middle: 'Winston'
+        last: 'Lennon'
+      password: 'Working Class Hero Is Something To Be'
+      repeatedPassword: 'Working Class Hero Is Something To Be'
+      registrationDateTime: 1437721697343
